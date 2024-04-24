@@ -54,4 +54,13 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .status(HttpStatus.NOT_FOUND)
                 .body(exceptionResponse);
     }
+
+    @ExceptionHandler({RegistrationException.class})
+    protected ResponseEntity<Object> handleRegistrationException(RegistrationException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exceptionResponse);
+    }
 }
