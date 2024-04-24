@@ -18,8 +18,8 @@ public record CreateCarRequestDto(
         @PositiveOrZero
         BigDecimal dailyFee) {
 
-        @Override
-        public String type() {
-                return type.toUpperCase();
-        }
+    @Override
+    public String type() {
+        return type.toUpperCase();
+    }
 }
