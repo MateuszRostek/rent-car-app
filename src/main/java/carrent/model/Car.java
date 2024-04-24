@@ -26,7 +26,7 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
     @Column(name = "model", nullable = false)
     private String model;
     @Column(name = "brand", nullable = false)
@@ -38,7 +38,7 @@ public class Car {
     private int inventory;
     @Column(name = "daily_fee", nullable = false)
     private BigDecimal dailyFee;
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
     public enum Type {
