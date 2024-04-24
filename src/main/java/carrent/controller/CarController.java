@@ -1,7 +1,9 @@
 package carrent.controller;
 
-import carrent.model.Car;
+import carrent.dto.car.CarDto;
+import carrent.dto.car.CreateCarRequestDto;
 import carrent.service.car.CarService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,23 +25,23 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping("/{id}")
-    public Car getCarById(@PathVariable Long id) {
+    public CarDto getCarById(@PathVariable Long id) {
         return carService.findById(id);
     }
 
     @GetMapping
-    public List<Car> getAllCars(Pageable pageable) {
+    public List<CarDto> getAllCars(Pageable pageable) {
         return carService.findAll(pageable);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Car createCar(@RequestBody Car car) {
+    public CarDto createCar(@RequestBody @Valid CreateCarRequestDto car) {
         return carService.save(car);
     }
 
     @PutMapping("/{id}")
-    public Car updateCar(@PathVariable Long id, @RequestBody Car car) {
+    public CarDto updateCar(@PathVariable Long id, @RequestBody @Valid CreateCarRequestDto car) {
         return carService.updateById(id, car);
     }
 

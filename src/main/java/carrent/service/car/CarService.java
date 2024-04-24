@@ -1,17 +1,18 @@
 package carrent.service.car;
 
-import carrent.model.Car;
+import carrent.dto.car.CarDto;
+import carrent.dto.car.CreateCarRequestDto;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface CarService {
-    Car save(Car car);
+    CarDto save(CreateCarRequestDto car);
 
-    List<Car> findAll(Pageable pageable);
+    List<CarDto> findAll(Pageable pageable);
 
-    Car findById(Long id);
+    CarDto findById(Long id);
 
-    Car updateById(Long id, Car car);
+    CarDto updateById(Long id, CreateCarRequestDto car);
 
     void deleteById(Long id);
 }

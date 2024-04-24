@@ -1,5 +1,8 @@
 package carrent.service.car.impl;
 
+import carrent.dto.car.CarDto;
+import carrent.dto.car.CreateCarRequestDto;
+import carrent.mapper.CarMapper;
 import carrent.model.Car;
 import carrent.repository.car.CarRepository;
 import carrent.service.car.CarService;
@@ -13,27 +16,33 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
+    private final CarMapper carMapper;
 
     @Override
-    public Car save(Car car) {
-        return carRepository.save(car);
+    public CarDto save(CreateCarRequestDto car) {
+        Car modelCar = carMapper.toModelFromCreate(car);
+        return carMapper.toDtoFromModel(carRepository.save(modelCar));
     }
 
     @Override
-    public List<Car> findAll(Pageable pageable) {
-        return carRepository.findAll(pageable).toList();
+    public List<CarDto> findAll(Pageable pageable) {
+        return carRepository.findAll(pageable).stream()
+                .map(carMapper::toDtoFromModel)
+                .toList();
     }
 
     @Override
-    public Car findById(Long id) {
-        return carRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Can't find car with id " + id));
+    public CarDto findById(Long id) {
+        return carMapper.toDtoFromModel(
+                carRepository.findById(id).orElseThrow(
+                    () -> new EntityNotFoundException("Can't find car with id " + id)));
     }
 
     @Override
-    public Car updateById(Long id, Car car) {
-        car.setId(id);
-        return carRepository.save(car);
+    public CarDto updateById(Long id, CreateCarRequestDto car) {
+        Car modelCar = carMapper.toModelFromCreate(car);
+        modelCar.setId(id);
+        return carMapper.toDtoFromModel(carRepository.save(modelCar));
     }
 
     @Override
