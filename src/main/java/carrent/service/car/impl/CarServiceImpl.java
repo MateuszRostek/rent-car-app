@@ -7,8 +7,10 @@ import carrent.model.Car;
 import carrent.repository.car.CarRepository;
 import carrent.service.car.CarService;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto save(CreateCarRequestDto car) {
+        if (!EnumUtils.isValidEnum(Car.Type.class, car.type())) {
+            throw new EntityNotFoundException("Invalid car type, must be one of the following: "
+                    + Arrays.toString(Car.Type.values()));
+        }
         Car modelCar = carMapper.toModelFromCreate(car);
         return carMapper.toDtoFromModel(carRepository.save(modelCar));
     }

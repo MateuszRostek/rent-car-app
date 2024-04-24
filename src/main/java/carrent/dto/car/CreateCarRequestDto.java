@@ -1,6 +1,5 @@
 package carrent.dto.car;
 
-import carrent.model.Car;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,11 +10,16 @@ public record CreateCarRequestDto(
         String model,
         @NotBlank
         String brand,
-        Car.Type type,
-        @NotNull
+        @NotBlank
+        String type,
         @PositiveOrZero
         int inventory,
         @NotNull
         @PositiveOrZero
         BigDecimal dailyFee) {
+
+        @Override
+        public String type() {
+                return type.toUpperCase();
+        }
 }
