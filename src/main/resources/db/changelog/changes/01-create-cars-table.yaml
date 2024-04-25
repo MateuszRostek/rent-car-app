@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cars-table
+      author: mrostek
+      changes:
+        - createTable:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: model
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: brand
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: ENUM('SEDAN','SUV','HATCHBACK','UNIVERSAL')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: daily_fee
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

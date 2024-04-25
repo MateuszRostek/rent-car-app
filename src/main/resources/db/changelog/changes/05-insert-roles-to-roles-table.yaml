@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-roles-to-roles-table
+      author: mrostek
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column: {name: name, value: "CUSTOMER"}
+        - insert:
+            tableName: roles
+            columns:
+              - column: {name: name, value: "MANAGER"}
