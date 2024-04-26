@@ -1,5 +1,6 @@
 package carrent.service.user.impl;
 
+import carrent.dto.user.UserInfoResponseDto;
 import carrent.dto.user.UserRegistrationRequestDto;
 import carrent.dto.user.UserRegistrationResponseDto;
 import carrent.exception.RegistrationException;
@@ -11,6 +12,7 @@ import carrent.repository.user.UserRepository;
 import carrent.service.user.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +37,16 @@ public class UserServiceImpl implements UserService {
                 () -> new RegistrationException("Can't find default role: " + DEFAULT_ROLE_NAME));
         modelUser.setRoles(Set.of(defaultRole));
         return userMapper.toDtoFromModel(userRepository.save(modelUser));
+    }
+
+    @Override
+    public UserInfoResponseDto getProfileInfo(Authentication authentication) {
+        User userFromDb = getUserFromAuthentication(authentication);
+        return userMapper.toUserInfoDtoFromModel(userFromDb);
+    }
+
+    @Override
+    public User getUserFromAuthentication(Authentication authentication) {
+        return (User) authentication.getPrincipal();
     }
 }
