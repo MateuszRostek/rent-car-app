@@ -1,8 +1,11 @@
 package carrent.controller;
 
+import carrent.dto.user.UserLoginRequestDto;
+import carrent.dto.user.UserLoginResponseDto;
 import carrent.dto.user.UserRegistrationRequestDto;
 import carrent.dto.user.UserRegistrationResponseDto;
 import carrent.exception.RegistrationException;
+import carrent.security.AuthenticationService;
 import carrent.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
@@ -25,5 +29,11 @@ public class AuthenticationController {
             @RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         return userService.registerUser(requestDto);
+    }
+
+    @PostMapping("/login")
+    public UserLoginResponseDto loginUser(
+            @RequestBody @Valid UserLoginRequestDto requestDto) {
+        return authenticationService.authenticate(requestDto);
     }
 }
