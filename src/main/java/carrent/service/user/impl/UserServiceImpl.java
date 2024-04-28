@@ -13,9 +13,11 @@ import carrent.repository.role.RoleRepository;
 import carrent.repository.user.UserRepository;
 import carrent.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,13 +69,14 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponseDto updateUserRoles(Long id, UserRoleUpdateRequestDto requestDto) {
         User userFromDb = userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find user with id " + id));
-        HashSet<Role> newRoles = new HashSet<>();
-        Set<String> roleNames = requestDto.roleNames();
-        for (String roleName : roleNames) {
-            newRoles.add(roleRepository.findByName(Role.RoleName.valueOf(roleName.toUpperCase()))
-                    .orElseThrow(
-                            () -> new EntityNotFoundException(
-                                    "Can't find role with name " + roleName)));
+        Set<Role> newRoles = new HashSet<>();
+        for (String roleName : requestDto.roleNames()) {
+            if (!EnumUtils.isValidEnum(Role.RoleName.class, roleName.toUpperCase())) {
+                throw new EntityNotFoundException(
+                        "Role with name '%s' not found. Must be one of: %s"
+                        .formatted(roleName, Arrays.toString(Role.RoleName.values())));
+            }
+            newRoles.add(roleRepository.getByName(Role.RoleName.valueOf(roleName.toUpperCase())));
         }
         userFromDb.setRoles(newRoles);
         return userMapper.toUserInfoDtoFromModel(userRepository.save(userFromDb));

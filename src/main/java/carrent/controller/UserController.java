@@ -6,6 +6,7 @@ import carrent.dto.user.UserUpdateRequestDto;
 import carrent.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ public class UserController {
         return userService.updateProfileInfo(authentication, requestDto);
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PutMapping("/{id}/role")
     public UserInfoResponseDto getId(
             @PathVariable Long id, @RequestBody @Valid UserRoleUpdateRequestDto requestDto) {
