@@ -63,4 +63,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .status(HttpStatus.CONFLICT)
                 .body(exceptionResponse);
     }
+
+    @ExceptionHandler({CarNotAvailableException.class})
+    protected ResponseEntity<Object> handleCarNotAvailableException(
+            CarNotAvailableException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exceptionResponse);
+    }
 }
