@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users-to-users-table
+      author: mrostek
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "john@manager.com" }
+              - column: { name: first_name, value: "John" }
+              - column: { name: last_name, value: "Jackson" }
+              - column: { name: password, value: "$2a$10$2UWH5EMjHJGwl1JbzyXd1uG1OS7W1pmOhWQXcF9nFByYM7aGUhlS6" }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, valueNumeric: 1 }
+              - column: { name: role_id, valueNumeric: 2 }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "paul@customer.com" }
+              - column: { name: first_name, value: "Paul" }
+              - column: { name: last_name, value: "Walker" }
+              - column: { name: password, value: "$2a$10$2UWH5EMjHJGwl1JbzyXd1uG1OS7W1pmOhWQXcF9nFByYM7aGUhlS6" }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, valueNumeric: 2 }
+              - column: { name: role_id, valueNumeric: 1 }
