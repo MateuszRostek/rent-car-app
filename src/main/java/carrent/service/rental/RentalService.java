@@ -6,4 +6,6 @@ import carrent.model.User;
 
 public interface RentalService {
     RentalDto createNewRental(User user, RentalRequestDto requestDto);
+
+    RentalDto findRentalByUserAndId(User user, Long id);
 }

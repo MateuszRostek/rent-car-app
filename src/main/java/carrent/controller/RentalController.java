@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,5 +31,11 @@ public class RentalController {
             @RequestBody @Valid RentalRequestDto requestDto) {
         User user = userService.getUserFromAuthentication(authentication);
         return rentalService.createNewRental(user, requestDto);
+    }
+
+    @GetMapping("/{id}")
+    public RentalDto getRentalById(Authentication authentication, @PathVariable Long id) {
+        User user = userService.getUserFromAuthentication(authentication);
+        return rentalService.findRentalByUserAndId(user, id);
     }
 }

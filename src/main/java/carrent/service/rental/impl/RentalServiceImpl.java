@@ -12,7 +12,9 @@ import carrent.repository.rental.RentalRepository;
 import carrent.service.rental.RentalService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +27,7 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public RentalDto createNewRental(User user, RentalRequestDto requestDto) {
         Rental rental = new Rental();
-        rental.setCar(findAndCheckCarAvailabilityById(requestDto.carId()));
+        rental.setCar(findCarById(requestDto.carId()));
         rental.setRentalDate(LocalDate.now());
         rental.setReturnDate(LocalDate.now().plusDays(requestDto.daysOfRental()));
         rental.setActualReturnDate(null);
@@ -35,12 +37,27 @@ public class RentalServiceImpl implements RentalService {
         return rentalDto;
     }
 
-    private Car findAndCheckCarAvailabilityById(Long carId) {
+    @Override
+    public RentalDto findRentalByUserAndId(User user, Long id) {
+        Rental rentalFromDb = rentalRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't find rental by id: " + id));
+        if (!Objects.equals(rentalFromDb.getUser().getId(), user.getId())) {
+            throw new AccessDeniedException("This user is not allowed to access this rental");
+        }
+        return rentalMapper.toDtoFromModel(rentalFromDb);
+    }
+
+    private Car findCarById(Long carId) {
         Car carFromDb = carRepository.findById(carId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find car with id " + carId));
-        if (carFromDb.getInventory() <= 0) {
-            throw new CarNotAvailableException("Car is not available!");
-        }
+        checkCarAvailability(carFromDb);
         return carFromDb;
+    }
+
+    private void checkCarAvailability(Car car) {
+        if (car.getInventory() <= 0) {
+            throw new CarNotAvailableException(
+                    "Car is currently out of stock! Please choose another");
+        }
     }
 }
