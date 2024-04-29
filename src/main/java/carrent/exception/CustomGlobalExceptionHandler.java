@@ -84,4 +84,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .status(HttpStatus.FORBIDDEN)
                 .body(exceptionResponse);
     }
+
+    @ExceptionHandler({CarAlreadyReturnedException.class})
+    protected ResponseEntity<Object> handleCarAlreadyReturnedException(
+            CarAlreadyReturnedException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exceptionResponse);
+    }
 }

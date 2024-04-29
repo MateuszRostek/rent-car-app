@@ -2,6 +2,7 @@ package carrent.service.rental.impl;
 
 import carrent.dto.rental.RentalDto;
 import carrent.dto.rental.RentalRequestDto;
+import carrent.exception.CarAlreadyReturnedException;
 import carrent.exception.CarNotAvailableException;
 import carrent.mapper.RentalMapper;
 import carrent.model.Car;
@@ -26,8 +27,13 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public RentalDto createNewRental(User user, RentalRequestDto requestDto) {
+        Car carFromDb = findCarById(requestDto.carId());
+        checkCarAvailability(carFromDb);
+        carFromDb.setInventory(carFromDb.getInventory() - 1);
+        carRepository.save(carFromDb);
+
         Rental rental = new Rental();
-        rental.setCar(findCarById(requestDto.carId()));
+        rental.setCar(carFromDb);
         rental.setRentalDate(LocalDate.now());
         rental.setReturnDate(LocalDate.now().plusDays(requestDto.daysOfRental()));
         rental.setActualReturnDate(null);
@@ -39,19 +45,40 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public RentalDto findRentalByUserAndId(User user, Long id) {
+        Rental rentalFromDb = findRentalInDbAndValidateUser(id, user);
+        RentalDto rentalDto = rentalMapper.toDtoFromModel(rentalFromDb);
+        rentalDto.carInfo().setInventory(1);
+        return rentalDto;
+    }
+
+    @Override
+    public RentalDto returnRentalByUserAndId(User user, Long id) {
+        Rental rentalFromDb = findRentalInDbAndValidateUser(id, user);
+        if (rentalFromDb.getActualReturnDate() != null) {
+            throw new CarAlreadyReturnedException("This car has been already returned!");
+        }
+        Car carFromDb = findCarById(rentalFromDb.getCar().getId());
+        carFromDb.setInventory(carFromDb.getInventory() + 1);
+        carRepository.save(carFromDb);
+        rentalFromDb.setActualReturnDate(LocalDate.now());
+
+        RentalDto rentalDto = rentalMapper.toDtoFromModel(rentalRepository.save(rentalFromDb));
+        rentalDto.carInfo().setInventory(0);
+        return rentalDto;
+    }
+
+    private Rental findRentalInDbAndValidateUser(Long id, User user) {
         Rental rentalFromDb = rentalRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find rental by id: " + id));
         if (!Objects.equals(rentalFromDb.getUser().getId(), user.getId())) {
             throw new AccessDeniedException("This user is not allowed to access this rental");
         }
-        return rentalMapper.toDtoFromModel(rentalFromDb);
+        return rentalFromDb;
     }
 
     private Car findCarById(Long carId) {
-        Car carFromDb = carRepository.findById(carId).orElseThrow(
+        return carRepository.findById(carId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find car with id " + carId));
-        checkCarAvailability(carFromDb);
-        return carFromDb;
     }
 
     private void checkCarAvailability(Car car) {

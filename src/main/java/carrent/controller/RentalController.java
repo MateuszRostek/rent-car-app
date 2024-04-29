@@ -38,4 +38,10 @@ public class RentalController {
         User user = userService.getUserFromAuthentication(authentication);
         return rentalService.findRentalByUserAndId(user, id);
     }
+
+    @PostMapping("/{id}/return")
+    public RentalDto returnRental(Authentication authentication, @PathVariable Long id) {
+        User user = userService.getUserFromAuthentication(authentication);
+        return rentalService.returnRentalByUserAndId(user, id);
+    }
 }

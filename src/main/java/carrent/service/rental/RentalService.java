@@ -8,4 +8,6 @@ public interface RentalService {
     RentalDto createNewRental(User user, RentalRequestDto requestDto);
 
     RentalDto findRentalByUserAndId(User user, Long id);
+
+    RentalDto returnRentalByUserAndId(User user, Long id);
 }
