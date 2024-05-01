@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-cars-to-cars-table
+      author: mrostek
+      changes:
+        - insert:
+            tableName: cars
+            columns:
+              - column: { name: model, value: "Y" }
+              - column: { name: brand, value: "Tesla" }
+              - column: { name: type, value: "SUV" }
+              - column: { name: inventory, valueNumeric: 4 }
+              - column: { name: daily_fee, valueNumeric: 149.99 }
+        - insert:
+            tableName: cars
+            columns:
+              - column: { name: model, value: "i30" }
+              - column: { name: brand, value: "Hyundai" }
+              - column: { name: type, value: "HATCHBACK" }
+              - column: { name: inventory, valueNumeric: 2 }
+              - column: { name: daily_fee, valueNumeric: 45.99 }
