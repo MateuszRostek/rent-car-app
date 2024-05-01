@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -74,40 +75,32 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public List<BasicRentalDto> findAllRentalsByUserAndRentalStatus(
             User user, Boolean isActive, Long userId) {
-        if (userId == null && checkIfUserIsManager(user)) {
-            return rentalRepository.findAll().stream()
+        if (checkIfUserIsManager(user)) {
+            return createRentalStreamForManager(userId)
                     .map(rentalMapper::toBasicDtoFromModel)
-                    .filter(br -> {
-                        if (isActive == null) {
-                            return true;
-                        }
-                        return isActive == (br.actualReturnDate() == null);
-                    })
-                    .toList();
-        }
-        if (userId != null && checkIfUserIsManager(user)) {
-            return rentalRepository.findAllByUserId(userId).stream()
-                    .map(rentalMapper::toBasicDtoFromModel)
-                    .filter(br -> {
-                        if (isActive == null) {
-                            return true;
-                        }
-                        return isActive == (br.actualReturnDate() == null);
-                    })
+                    .filter(br -> filterRentalsByIsActive(br, isActive))
                     .toList();
         }
         if (userId == null || userId.equals(user.getId())) {
             return rentalRepository.findAllByUser(user).stream()
                     .map(rentalMapper::toBasicDtoFromModel)
-                    .filter(br -> {
-                        if (isActive == null) {
-                            return true;
-                        }
-                        return isActive == (br.actualReturnDate() == null);
-                    })
+                    .filter(br -> filterRentalsByIsActive(br, isActive))
                     .toList();
         }
         throw new AccessDeniedException("This user is not allowed to access these rentals");
+    }
+
+    private Stream<Rental> createRentalStreamForManager(Long userId) {
+        return userId == null
+                ? rentalRepository.findAll().stream()
+                : rentalRepository.findAllByUserId(userId).stream();
+    }
+
+    private boolean filterRentalsByIsActive(BasicRentalDto basicRentalDto, Boolean isActive) {
+        if (isActive == null) {
+            return true;
+        }
+        return isActive == (basicRentalDto.actualReturnDate() == null);
     }
 
     private boolean checkIfUserIsManager(User user) {
