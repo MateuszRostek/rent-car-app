@@ -12,6 +12,7 @@ import carrent.model.Role;
 import carrent.model.User;
 import carrent.repository.car.CarRepository;
 import carrent.repository.rental.RentalRepository;
+import carrent.service.notification.NotificationService;
 import carrent.service.rental.RentalService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    private final NotificationService notificationService;
 
     @Override
     public RentalDto createNewRental(User user, RentalRequestDto requestDto) {
@@ -45,6 +47,7 @@ public class RentalServiceImpl implements RentalService {
         rental.setUser(user);
         RentalDto rentalDto = rentalMapper.toDtoFromModel(rentalRepository.save(rental));
         rentalDto.carInfo().setInventory(1);
+        notificationService.sendRentalCreationNotification(rentalDto);
         return rentalDto;
     }
 
