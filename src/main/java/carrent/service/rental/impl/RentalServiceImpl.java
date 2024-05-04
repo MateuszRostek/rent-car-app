@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class RentalServiceImpl implements RentalService {
     private final NotificationService notificationService;
 
     @Override
+    @Transactional
     public RentalDto createNewRental(User user, RentalRequestDto requestDto) {
         Car carFromDb = findCarById(requestDto.carId());
         checkCarAvailability(carFromDb);
@@ -60,6 +62,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Transactional
     public RentalDto returnRentalByUserAndId(User user, Long id) {
         Rental rentalFromDb = findRentalInDbAndValidateUser(id, user);
         if (rentalFromDb.getActualReturnDate() != null) {
