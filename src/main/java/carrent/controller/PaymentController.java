@@ -7,6 +7,7 @@ import carrent.service.payment.PaymentService;
 import carrent.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,10 @@ public class PaymentController {
     private final UserService userService;
 
     @PostMapping
-    public PaymentDto createPaymentSession(@RequestBody CreatePaymentRequestDto requestDto) {
-        return paymentService.createPaymentSession(requestDto);
+    public PaymentDto createPaymentSession(
+            @Value("${stripe.api.key}") String stripeApiKey,
+            @RequestBody CreatePaymentRequestDto requestDto) {
+        return paymentService.createPaymentSession(stripeApiKey, requestDto);
     }
 
     @GetMapping

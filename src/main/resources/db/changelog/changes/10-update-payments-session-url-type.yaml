@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-payments-session-url-type
+      author: mrostek
+      changes:
+        - modifyDataType:
+            columnName: session_url
+            newDataType: varchar(500)
+            tableName: payments

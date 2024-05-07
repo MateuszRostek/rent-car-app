@@ -17,3 +17,5 @@ databaseChangeLog:
       file: /db/changelog/changes/08-create-rentals-table.yaml
   - include:
       file: /db/changelog/changes/09-create-payments-table.yaml
+  - include:
+      file: /db/changelog/changes/10-update-payments-session-url-type.yaml

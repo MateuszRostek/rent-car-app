@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private Type type;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "rental_id", nullable = false, unique = true)
     private Rental rental;
     @Column(name = "amount_to_pay", nullable = false)

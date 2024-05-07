@@ -6,7 +6,7 @@ import carrent.model.User;
 import java.util.List;
 
 public interface PaymentService {
-    PaymentDto createPaymentSession(CreatePaymentRequestDto requestDto);
+    PaymentDto createPaymentSession(String stripeApiKey, CreatePaymentRequestDto requestDto);
 
     List<PaymentDto> getAllPaymentsByUserId(User user, Long userId);
 }
