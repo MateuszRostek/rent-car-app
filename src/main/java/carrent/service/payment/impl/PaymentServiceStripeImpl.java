@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +52,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
             CreatePaymentRequestDto requestDto) {
         Stripe.apiKey = stripeApiKey;
         Long rentalId = requestDto.rentalId();
+        checkIfAlreadyCreated(requestDto);
         checkIfAlreadyPaid(requestDto);
         BigDecimal totalPrice = calculateTotalPrice(requestDto).setScale(2, RoundingMode.CEILING);
 
@@ -116,18 +116,21 @@ public class PaymentServiceStripeImpl implements PaymentService {
     }
 
     private void checkIfAlreadyPaid(CreatePaymentRequestDto requestDto) {
-        Optional<Payment> paymentFromDb;
-        try {
-            paymentFromDb = paymentRepository.findByRentalIdAndType(
+        Optional<Payment> paymentFromDb = paymentRepository.findByRentalIdAndType(
                     requestDto.rentalId(), requestDto.type());
-        } catch (IncorrectResultSizeDataAccessException e) {
-            throw new TooManyPaymentsException(
-                    "Too many payment records for the given rental ID: " + requestDto.rentalId()
-            + ". Finish previous payment instead of creating a new one!");
-        }
         if (paymentFromDb.isPresent()
                 && paymentFromDb.get().getStatus().equals(Payment.Status.PAID)) {
             throw new PaymentAlreadyPaidException("This payment has been already paid!");
+        }
+    }
+
+    private void checkIfAlreadyCreated(CreatePaymentRequestDto requestDto) {
+        Optional<Payment> paymentFromDb = paymentRepository.findByRentalIdAndType(
+                requestDto.rentalId(), requestDto.type());
+        if (paymentFromDb.isPresent()) {
+            throw new TooManyPaymentsException(
+                    "Too many payment records for the given rental ID: " + requestDto.rentalId()
+                    + ". Finish previous payment instead of creating a new one!");
         }
     }
 
