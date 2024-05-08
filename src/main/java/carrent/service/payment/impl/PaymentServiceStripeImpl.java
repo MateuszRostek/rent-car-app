@@ -4,6 +4,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 import carrent.dto.payment.CreatePaymentRequestDto;
 import carrent.dto.payment.PaymentDto;
+import carrent.dto.payment.PaymentPausedDto;
 import carrent.exception.PaymentAlreadyPaidException;
 import carrent.exception.StripeSessionCreationException;
 import carrent.exception.TooManyPaymentsException;
@@ -37,10 +38,11 @@ public class PaymentServiceStripeImpl implements PaymentService {
     private static final Role.RoleName MANAGER_ROLENAME = Role.RoleName.MANAGER;
     private static final BigDecimal FINE_MULTIPLIER = new BigDecimal("1.7");
     private static final BigDecimal DOLLARS_TO_CENTS = new BigDecimal("100");
-    private static final String SUCCESS_URL_STRING = "http://localhost:8080/api/payments/success/";
+    private static final String SUCCESS_URL_STRING = "http://localhost:8080/api/payments/success/%d?type=%s";
     private static final String CANCEL_URL_STRING = "http://localhost:8080/api/payments/cancel/";
     private static final String CURRENCY = "USD";
     private static final String PAYMENT_NAME = "Payment for car rental - rental ID: ";
+    private static final String STRIPE_PAYMENT_STATUS_PAID = "paid";
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final RentalRepository rentalRepository;
@@ -58,7 +60,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
 
         SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
                 .setSuccessUrl(UriComponentsBuilder.fromHttpUrl(
-                        SUCCESS_URL_STRING + rentalId).toUriString())
+                        SUCCESS_URL_STRING.formatted(rentalId, requestDto.type())).toUriString())
                 .setCancelUrl(UriComponentsBuilder.fromHttpUrl(
                         CANCEL_URL_STRING + rentalId).toUriString())
                 .addLineItem(
@@ -113,6 +115,35 @@ public class PaymentServiceStripeImpl implements PaymentService {
                     .toList();
         }
         throw new AccessDeniedException("This user is not allowed to access these payments");
+    }
+
+    @Override
+    public PaymentPausedDto getCancelPaymentPausedMessage(Long rentalId) {
+        return new PaymentPausedDto(
+                "The Payment was canceled! "
+                        + "It can be made later, but the session is available for only 24 hours!"
+                        + "Rental ID: " + rentalId);
+    }
+
+    @Override
+    @Transactional
+    public PaymentDto checkSuccessfulPayment(
+            String stripeApiKey, Long rentalId, Payment.Type type) {
+        Stripe.apiKey = stripeApiKey;
+        Payment paymentFromDb = paymentRepository.findByRentalIdAndType(rentalId, type)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find payment with id: " + rentalId));
+        Session session;
+        try {
+            session = Session.retrieve(paymentFromDb.getSessionId());
+        } catch (StripeException e) {
+            throw new StripeSessionCreationException("Can't retrieve Stripe session!", e);
+        }
+        if (session.getPaymentStatus().equals(STRIPE_PAYMENT_STATUS_PAID)) {
+            paymentFromDb.setStatus(Payment.Status.PAID);
+            return paymentMapper.toDtoFromModel(paymentRepository.save(paymentFromDb));
+        }
+        throw new AccessDeniedException("Can't access this endpoint - The payment is not paid!");
     }
 
     private void checkIfAlreadyPaid(CreatePaymentRequestDto requestDto) {
