@@ -15,6 +15,7 @@ import carrent.model.Role;
 import carrent.model.User;
 import carrent.repository.payment.PaymentRepository;
 import carrent.repository.rental.RentalRepository;
+import carrent.service.notification.NotificationService;
 import carrent.service.payment.PaymentService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -46,6 +47,7 @@ public class PaymentServiceStripeImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final RentalRepository rentalRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -141,7 +143,10 @@ public class PaymentServiceStripeImpl implements PaymentService {
         }
         if (session.getPaymentStatus().equals(STRIPE_PAYMENT_STATUS_PAID)) {
             paymentFromDb.setStatus(Payment.Status.PAID);
-            return paymentMapper.toDtoFromModel(paymentRepository.save(paymentFromDb));
+            PaymentDto paymentDto = paymentMapper.toDtoFromModel(
+                    paymentRepository.save(paymentFromDb));
+            notificationService.sendSuccessfulPaymentNotification(paymentDto);
+            return paymentDto;
         }
         throw new AccessDeniedException("Can't access this endpoint - The payment is not paid!");
     }
