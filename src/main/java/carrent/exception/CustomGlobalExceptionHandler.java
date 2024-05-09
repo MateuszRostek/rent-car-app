@@ -94,4 +94,34 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .status(HttpStatus.CONFLICT)
                 .body(exceptionResponse);
     }
+
+    @ExceptionHandler({PaymentAlreadyPaidException.class})
+    protected ResponseEntity<Object> handlePaymentAlreadyPaidException(
+            PaymentAlreadyPaidException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(exceptionResponse);
+    }
+
+    @ExceptionHandler({TooManyPaymentsException.class})
+    protected ResponseEntity<Object> handleTooManyPaymentsException(
+            TooManyPaymentsException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exceptionResponse);
+    }
+
+    @ExceptionHandler({StripeSessionCreationException.class})
+    protected ResponseEntity<Object> handleStripeSessionCreationException(
+            StripeSessionCreationException exception) {
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(exceptionResponse);
+    }
 }

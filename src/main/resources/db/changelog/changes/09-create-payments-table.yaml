@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-payments-table
+      author: mrostek
+      changes:
+        - createTable:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: ENUM('PENDING','PAID')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: ENUM('PAYMENT','FINE')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rental_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_payments_rental_id
+                    references: rentals(id)
+                    nullable: false
+              - column:
+                  name: amount_to_pay
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: session_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: session_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true

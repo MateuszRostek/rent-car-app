@@ -1,5 +1,6 @@
 package carrent.service.notification;
 
+import carrent.dto.payment.PaymentDto;
 import carrent.dto.rental.RentalDto;
 import carrent.exception.TelegramExecutionException;
 import carrent.model.Rental;
@@ -73,6 +74,24 @@ public class TelegramNotificationService extends TelegramLongPollingBot
             return;
         }
         sendText(buildOverdueRentalsMessage(today, overdueRentals));
+    }
+
+    @Override
+    public void sendSuccessfulPaymentNotification(PaymentDto payment) {
+        String paymentInfo = String.format("""
+                        %n
+                        Payment ID: %d
+                        Payment Status: %s
+                        Payment Type: %s
+                        Rental ID: %d
+                        Amount Paid: %s
+                        """,
+                payment.getId(),
+                payment.getStatus(),
+                payment.getType(),
+                payment.getRentalId(),
+                payment.getAmountToPay());
+        sendText("Payment has been paid:" + paymentInfo);
     }
 
     private static String buildOverdueRentalsMessage(
