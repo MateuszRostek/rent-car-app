@@ -45,8 +45,8 @@ public class PaymentController {
     @Operation(
             summary = "Get all payments by user ID",
             description = "Retrieve a list of payments based on the user ID "
-                    + "- admins can access all users' payments, "
-                    + "while users can only access their own payments.")
+                    + "- managers can access all users' payments, "
+                    + "while customers can only access their own payments.")
     @GetMapping
     public List<PaymentDto> getAllPaymentsByUserId(
             Authentication authentication,

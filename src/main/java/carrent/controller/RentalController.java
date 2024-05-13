@@ -43,8 +43,8 @@ public class RentalController {
     @Operation(
             summary = "Get all rentals",
             description = "Retrieve a list of rentals based on the user and rental status "
-                    + "- admins can access all users' rentals, "
-                    + "while users can only access their own rentals.")
+                    + "- managers can access all users' rentals, "
+                    + "while customers can only access their own rentals.")
     @GetMapping()
     public List<BasicRentalDto> getAllRentalsByUserAndRentalStatus(
             Authentication authentication,
