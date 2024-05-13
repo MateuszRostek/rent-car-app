@@ -7,6 +7,8 @@ import carrent.model.Payment;
 import carrent.model.User;
 import carrent.service.payment.PaymentService;
 import carrent.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Payment Management", description = "Endpoints for managing payments")
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
@@ -28,6 +31,9 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final UserService userService;
 
+    @Operation(
+            summary = "Create a payment session",
+            description = "Create a payment session using Stripe API for processing payments.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentDto createPaymentSession(
@@ -36,6 +42,11 @@ public class PaymentController {
         return paymentService.createPaymentSession(stripeApiKey, requestDto);
     }
 
+    @Operation(
+            summary = "Get all payments by user ID",
+            description = "Retrieve a list of payments based on the user ID "
+                    + "- admins can access all users' payments, "
+                    + "while users can only access their own payments.")
     @GetMapping
     public List<PaymentDto> getAllPaymentsByUserId(
             Authentication authentication,
@@ -44,6 +55,10 @@ public class PaymentController {
         return paymentService.getAllPaymentsByUserId(user, userId);
     }
 
+    @Operation(
+            summary = "Check successful payment",
+            description = "Check the success of a payment "
+                    + "based on the rental ID and payment type - Stripe API redirection.")
     @GetMapping("/success/{rentalId}")
     public PaymentDto checkSuccessfulPayment(
             @Value("${stripe.api.key}") String stripeApiKey,
@@ -52,6 +67,10 @@ public class PaymentController {
         return paymentService.checkSuccessfulPayment(stripeApiKey, rentalId, type);
     }
 
+    @Operation(
+            summary = "Get cancel payment paused message",
+            description = "Retrieve a message indicating "
+                    + "that the payment cancellation process is paused - Stripe API redirection.")
     @GetMapping("/cancel/{rentalId}")
     public PaymentPausedDto getCancelPaymentPausedMessage(@PathVariable Long rentalId) {
         return paymentService.getCancelPaymentPausedMessage(rentalId);
