@@ -28,7 +28,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("Find a User by valid email")
+    @DisplayName("Find a User by valid email - Returns Optional with correct User")
     @Sql(scripts = {REMOVE_ALL_USERS_WITH_ROLES_PATH, ADD_TWO_USERS_WITH_ROLES_PATH},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findByEmail_ValidEmail_ReturnsOptionalWithCorrectUser() {
@@ -39,7 +39,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find a User by invalid email")
+    @DisplayName("Find a User by invalid email - Returns empty Optional")
     @Sql(scripts = {REMOVE_ALL_USERS_WITH_ROLES_PATH, ADD_TWO_USERS_WITH_ROLES_PATH},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findByEmail_InvalidEmail_ReturnsEmptyOptional() {
