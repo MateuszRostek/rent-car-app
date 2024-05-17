@@ -1,6 +1,6 @@
 # Car Rental Service API 🚗
 
-Introducing the Car Rental Service API - Your Ultimate Car Rental Hub! This project offers a comprehensive car rental service API, powered by Spring Boot, tailored to streamline your car rental experience. Explore its diverse functionalities encompassing user management, robust cars control, seamless rental processing, secure payment handling with Stripe integration, and dynamic notification services via Telegram.
+Introducing the Car Rental Service API - Your Ultimate Car Rental Hub! This project offers a comprehensive car rental service API, powered by Spring Boot, tailored to streamline your car rental experience. Explore its diverse functionalities encompassing user management, robust cars control, seamless rental processing, secure payment handling with Stripe integration, and dynamic notification service via Telegram.
 
 ## Table Of Content
 - [Technologies Used](#technologies-used)
