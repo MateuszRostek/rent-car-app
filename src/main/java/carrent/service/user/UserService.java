@@ -13,12 +13,11 @@ public interface UserService {
     UserRegistrationResponseDto registerUser(UserRegistrationRequestDto requestDto)
             throws RegistrationException;
 
-    UserInfoResponseDto getProfileInfo(Authentication authentication);
+    UserInfoResponseDto getProfileInfo(User user);
 
     User getUserFromAuthentication(Authentication authentication);
 
-    UserInfoResponseDto updateProfileInfo(
-            Authentication authentication, UserUpdateRequestDto requestDto);
+    UserInfoResponseDto updateProfileInfo(User user, UserUpdateRequestDto requestDto);
 
     UserInfoResponseDto updateUserRoles(Long id, UserRoleUpdateRequestDto requestDto);
 }

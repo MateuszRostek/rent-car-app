@@ -46,9 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponseDto getProfileInfo(Authentication authentication) {
-        User userFromDb = getUserFromAuthentication(authentication);
-        return userMapper.toUserInfoDtoFromModel(userFromDb);
+    public UserInfoResponseDto getProfileInfo(User user) {
+        return userMapper.toUserInfoDtoFromModel(user);
     }
 
     @Override
@@ -58,11 +57,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoResponseDto updateProfileInfo(
-            Authentication authentication, UserUpdateRequestDto requestDto) {
-        User userFromDb = getUserFromAuthentication(authentication);
-        userFromDb.setFirstName(requestDto.firstName());
-        userFromDb.setLastName(requestDto.lastName());
-        return userMapper.toUserInfoDtoFromModel(userRepository.save(userFromDb));
+            User user, UserUpdateRequestDto requestDto) {
+        user.setFirstName(requestDto.firstName());
+        user.setLastName(requestDto.lastName());
+        return userMapper.toUserInfoDtoFromModel(userRepository.save(user));
     }
 
     @Override

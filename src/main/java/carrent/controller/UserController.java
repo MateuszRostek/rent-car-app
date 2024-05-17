@@ -3,6 +3,7 @@ package carrent.controller;
 import carrent.dto.user.UserInfoResponseDto;
 import carrent.dto.user.UserRoleUpdateRequestDto;
 import carrent.dto.user.UserUpdateRequestDto;
+import carrent.model.User;
 import carrent.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +31,8 @@ public class UserController {
             description = "Retrieve the profile information of the authenticated user.")
     @GetMapping("/me")
     public UserInfoResponseDto getProfileInfo(Authentication authentication) {
-        return userService.getProfileInfo(authentication);
+        User user = userService.getUserFromAuthentication(authentication);
+        return userService.getProfileInfo(user);
     }
 
     @Operation(
@@ -39,7 +41,8 @@ public class UserController {
     @PatchMapping("/me")
     public UserInfoResponseDto updateProfileInfo(
             Authentication authentication, @RequestBody @Valid UserUpdateRequestDto requestDto) {
-        return userService.updateProfileInfo(authentication, requestDto);
+        User user = userService.getUserFromAuthentication(authentication);
+        return userService.updateProfileInfo(user, requestDto);
     }
 
     @Operation(

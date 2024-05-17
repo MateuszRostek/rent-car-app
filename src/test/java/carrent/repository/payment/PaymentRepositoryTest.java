@@ -24,9 +24,9 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PaymentRepositoryTest {
-    public static final String ADD_TWO_PAYMENTS_PATH =
+    private static final String ADD_TWO_PAYMENTS_PATH =
             "classpath:database/payment/add-two-payments-with-necessities.sql";
-    public static final String REMOVE_ALL_PAYMENTS_PATH =
+    private static final String REMOVE_ALL_PAYMENTS_PATH =
             "classpath:database/payment/remove-all-payments-with-necessities.sql";
     private static final Long VALID_USER_ID = 1L;
     private static final Long INVALID_USER_ID = 222L;
@@ -34,7 +34,7 @@ public class PaymentRepositoryTest {
     private PaymentRepository paymentRepository;
 
     @Test
-    @DisplayName("Find a List of all Payments by valid User ID")
+    @DisplayName("Find a List of all Payments by valid User ID - Returns list with correct Payment")
     @Sql(scripts = {REMOVE_ALL_PAYMENTS_PATH, ADD_TWO_PAYMENTS_PATH},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllByUserId_ValidUserId_ReturnsListWithOnePayment() {
@@ -45,7 +45,7 @@ public class PaymentRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find a List of all Payments by invalid User ID")
+    @DisplayName("Find a List of all Payments by invalid User ID - Returns empty list")
     @Sql(scripts = {REMOVE_ALL_PAYMENTS_PATH, ADD_TWO_PAYMENTS_PATH},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findAllByUserId_InvalidUserId_ReturnsEmptyList() {
