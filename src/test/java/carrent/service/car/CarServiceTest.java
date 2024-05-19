@@ -33,14 +33,14 @@ import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class CarServiceTest {
+    private static final int SAMPLE_INVENTORY = 2;
+    private static final BigDecimal SAMPLE_DAILY_FEE = BigDecimal.valueOf(199.99);
+    private static final Car.Type SAMPLE_TYPE = Car.Type.SUV;
     private static final Long VALID_CAR_ID = 1L;
     private static final Long INVALID_CAR_ID = 100L;
-    private static final BigDecimal SAMPLE_DAILY_FEE = BigDecimal.valueOf(199.99);
     private static final String SAMPLE_BRAND = "BMW";
     private static final String SAMPLE_MODEL = "X7";
-    private static final Car.Type SAMPLE_TYPE = Car.Type.SUV;
     private static final String SAMPLE_INVALID_TYPE_NAME = "RANDOM TYPE";
-    private static final int SAMPLE_INVENTORY = 2;
     @Mock
     private CarRepository carRepository;
     @Mock
