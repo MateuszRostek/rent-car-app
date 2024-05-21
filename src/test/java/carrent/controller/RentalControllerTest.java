@@ -41,9 +41,9 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RentalControllerTest {
     protected static MockMvc mockMvc;
-    private static final Long VALID_USER_ID = 2L;
     private static final String BASE_ENDPOINT = "/rentals";
     private static final String SAMPLE_USER_EMAIL = "paul@customer.com";
+    private static final Long VALID_USER_ID = 2L;
 
     @Autowired
     private ObjectMapper objectMapper;
