@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
     private final UserService userService;
+    @Value("${stripe.api.key}")
+    private String stripeApiKey;
 
     @Operation(
             summary = "Create a payment session",
@@ -37,7 +39,6 @@ public class PaymentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentDto createPaymentSession(
-            @Value("${stripe.api.key}") String stripeApiKey,
             @RequestBody CreatePaymentRequestDto requestDto) {
         return paymentService.createPaymentSession(stripeApiKey, requestDto);
     }
@@ -61,7 +62,6 @@ public class PaymentController {
                     + "based on the rental ID and payment type - Stripe API redirection.")
     @GetMapping("/success/{rentalId}")
     public PaymentDto checkSuccessfulPayment(
-            @Value("${stripe.api.key}") String stripeApiKey,
             @PathVariable Long rentalId,
             @RequestParam Payment.Type type) {
         return paymentService.checkSuccessfulPayment(stripeApiKey, rentalId, type);

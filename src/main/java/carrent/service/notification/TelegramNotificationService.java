@@ -19,6 +19,25 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramNotificationService extends TelegramLongPollingBot
         implements NotificationService {
     private static final Long CHAT_ID = -1002118105811L;
+    private static final String BOT_USERNAME = "rent_car_notification_bot";
+    private static final String BOT_NO_RESPONSE_MESSAGE = "Hey! This Bot doesn't respond "
+            + "to incoming messages! - it serves to send notifications!";
+    private static final String RENTAL_INFO_TEMPLATE = """
+            %n
+            Rental ID: %d
+            Car ID: %d
+            Rental Date: %s
+            Return Date: %s
+            User ID: %d
+            """;
+    private static final String PAYMENT_INFO_TEMPLATE = """
+            %n
+            Payment ID: %d
+            Payment Status: %s
+            Payment Type: %s
+            Rental ID: %d
+            Amount Paid: %s
+            """;
     private final String botToken;
     private final RentalRepository rentalRepository;
 
@@ -31,7 +50,7 @@ public class TelegramNotificationService extends TelegramLongPollingBot
 
     @Override
     public String getBotUsername() {
-        return "rent_car_notification_bot";
+        return BOT_USERNAME;
     }
 
     @Override
@@ -41,20 +60,12 @@ public class TelegramNotificationService extends TelegramLongPollingBot
 
     @Override
     public void onUpdateReceived(Update update) {
-        sendText("Hey! This Bot doesn't respond to incoming messages! "
-                + "- it serves to send notifications!");
+        sendText(BOT_NO_RESPONSE_MESSAGE);
     }
 
     @Override
     public void sendRentalCreationNotification(RentalDto rental) {
-        String rentalInfo = String.format("""
-                        %n
-                        Rental ID: %d
-                        Car ID: %d
-                        Rental Date: %s
-                        Return Date: %s
-                        User ID: %d
-                        """,
+        String rentalInfo = String.format(RENTAL_INFO_TEMPLATE,
                 rental.id(),
                 rental.carInfo().getId(),
                 rental.rentalDate(),
@@ -78,14 +89,7 @@ public class TelegramNotificationService extends TelegramLongPollingBot
 
     @Override
     public void sendSuccessfulPaymentNotification(PaymentDto payment) {
-        String paymentInfo = String.format("""
-                        %n
-                        Payment ID: %d
-                        Payment Status: %s
-                        Payment Type: %s
-                        Rental ID: %d
-                        Amount Paid: %s
-                        """,
+        String paymentInfo = String.format(PAYMENT_INFO_TEMPLATE,
                 payment.getId(),
                 payment.getStatus(),
                 payment.getType(),
