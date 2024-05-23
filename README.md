@@ -86,15 +86,11 @@ Below, I've included detailed explanations for each endpoint in the Postman coll
 
 ### Notification example:  
 
-<p align="center">
-  <img src="https://github.com/MateuszRostek/readme-tests/assets/140905715/3a1bb3ed-d82e-4d95-a757-b3bccc25df8c">
-</p>
+![telegram-notification-example](https://github.com/MateuszRostek/readme-tests/assets/140905715/3a1bb3ed-d82e-4d95-a757-b3bccc25df8c)
 
 ### Stripe Payment example:  
 
-<p align="center">
-  <img src="https://github.com/MateuszRostek/readme-tests/assets/140905715/20981593-a383-4f53-a07e-469238a542d6">
-</p>
+![stripe-payment-example](https://github.com/MateuszRostek/readme-tests/assets/140905715/20981593-a383-4f53-a07e-469238a542d6)
 
 ## SQL Database Diagram And Architecture
 
