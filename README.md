@@ -86,25 +86,25 @@ Below, I've included detailed explanations for each endpoint in the Postman coll
 
 ### Notification example:  
 
-![telegram-notification-example](https://github.com/MateuszRostek/readme-tests/assets/140905715/3a1bb3ed-d82e-4d95-a757-b3bccc25df8c)
+
 
 ### Stripe Payment example:  
 
-![stripe-payment-example](https://github.com/MateuszRostek/readme-tests/assets/140905715/20981593-a383-4f53-a07e-469238a542d6)
+
 
 ## SQL Database Diagram And Architecture
 
 ### SQL Database Diagram
 Below is a simplified representation of the database schema used in the Car Rental Service API:
 
-![rentcar-db-diagram](https://github.com/MateuszRostek/readme-tests/assets/140905715/6d29e8d2-b553-42f1-8240-f22f5cbeaeb1)
+
 
 This diagram illustrates the relationships between different entities in the database, including tables for users, payments, rentals, cars, and more.
 
 ### Architecture
 Here is also a **very** simplified version of the architecture of the project:
 
-![architecture-rent-car](https://github.com/MateuszRostek/readme-tests/assets/140905715/562c89d3-194a-4797-ac64-168b404b096b)
+
 
 ## Setup Instructions
 Ensure you have Docker and JDK installed  
